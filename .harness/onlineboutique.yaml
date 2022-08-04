@@ -15,10 +15,11 @@ pipeline:
                         infrastructure:
                             type: KubernetesDirect
                             spec:
-                                connectorRef: account.GKE
+                                connectorRef: account.EKS
                                 namespace: harness-builds
                                 automountServiceAccountToken: true
-                                nodeSelector: {}
+                                nodeSelector:
+                                    kubernetes.io/os: linux
                                 os: Linux
                         execution:
                             steps:
