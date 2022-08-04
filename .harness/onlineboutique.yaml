@@ -76,6 +76,9 @@ pipeline:
                                       spec:
                                           shell: Powershell
                                           command: dotnet test src/cartservice/
+                    when:
+                        pipelineStatus: Success
+                        condition: "false"
               - stage:
                     name: Security Tests
                     identifier: Security_Tests
