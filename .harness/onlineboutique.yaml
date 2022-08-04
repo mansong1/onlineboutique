@@ -36,7 +36,7 @@ pipeline:
                                     image: golang:<+stage.variables.goVersion>
                                     shell: Sh
                                     command: |-
-                                        go env -w GO111MODULE=off
+                                        ls
                                         go test src/<+matrix.service>
               variables:
                   - name: goVersion
