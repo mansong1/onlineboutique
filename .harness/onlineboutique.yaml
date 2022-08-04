@@ -59,7 +59,7 @@ pipeline:
                             type: KubernetesDirect
                             spec:
                                 connectorRef: account.EKS
-                                namespace: default
+                                namespace: harness-delegate-ng
                                 automountServiceAccountToken: true
                                 tolerations:
                                     - effect: NoSchedule
@@ -77,11 +77,14 @@ pipeline:
                                       name: Unit Tests
                                       identifier: Unit_Tests
                                       spec:
+                                          connectorRef: account.harnessImage
+                                          image: mcr.microsoft.com/dotnet/sdk:6.0
                                           language: Csharp
                                           buildEnvironment: Core
                                           frameworkVersion: "6.0"
                                           buildTool: Dotnet
                                           args: src/cartservice/
+                                          namespaces: harness-delegate-ng
                                           runOnlySelectedTests: true
                                           reports:
                                               type: JUnit
@@ -90,7 +93,6 @@ pipeline:
                                                       - "**/*.xml"
                     when:
                         pipelineStatus: Success
-                    variables: []
               - stage:
                     name: Security
                     identifier: Security
