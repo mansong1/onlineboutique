@@ -55,6 +55,28 @@ pipeline:
                                 - shippingservice
                                 - productcatalogservice
               - stage:
+                    name: CSharp Unit Tests
+                    identifier: CSharp_Unit_Tests
+                    type: CI
+                    spec:
+                        cloneCodebase: true
+                        infrastructure:
+                            type: VM
+                            spec:
+                                type: Pool
+                                spec:
+                                    poolName: windows
+                                    os: Windows
+                        execution:
+                            steps:
+                                - step:
+                                      type: Run
+                                      name: Unit Tests
+                                      identifier: Unit_Tests
+                                      spec:
+                                          shell: Powershell
+                                          command: dotnet test src/cartservice/
+              - stage:
                     name: Security Tests
                     identifier: Security_Tests
                     type: SecurityTests
