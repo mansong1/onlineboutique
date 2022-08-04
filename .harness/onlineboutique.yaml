@@ -60,7 +60,15 @@ pipeline:
                             spec:
                                 connectorRef: account.EKS
                                 namespace: default
-                                nodeSelector: {}
+                                automountServiceAccountToken: true
+                                tolerations:
+                                    - effect: NoSchedule
+                                      key: os
+                                      operator: Equal
+                                      value: windows
+                                nodeSelector:
+                                    kubernetes.io/os: windows
+                                    kubernetes.io/arch: amd64
                                 os: Windows
                         execution:
                             steps:
@@ -82,6 +90,7 @@ pipeline:
                                                       - "**/*.xml"
                     when:
                         pipelineStatus: Success
+                    variables: []
               - stage:
                     name: Security
                     identifier: Security
