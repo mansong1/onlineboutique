@@ -45,15 +45,16 @@ pipeline:
                                               spec:
                                                   paths:
                                                       - "**/unit-tests-<+matrix.service>.xml"
+                                      failureStrategies: []
+                                      strategy:
+                                          matrix:
+                                              service:
+                                                  - shippingservice
+                                                  - productcatalogservice
                     variables:
                         - name: goVersion
                           type: String
                           value: 1.17.5
-                    strategy:
-                        matrix:
-                            service:
-                                - shippingservice
-                                - productcatalogservice
               - stage:
                     name: CSharp Unit Tests
                     identifier: CSharp_Unit_Tests
