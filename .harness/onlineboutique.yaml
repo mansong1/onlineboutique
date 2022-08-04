@@ -101,4 +101,15 @@ pipeline:
                                               scan_type: repository
                                               product_name: owasp
                                               product_config_name: default
+                        serviceDependencies:
+                            - identifier: DIND
+                              name: DIND
+                              type: Service
+                              spec:
+                                  connectorRef: account.harnessImage
+                                  image: docker:dind
+                                  privileged: true
+                        sharedPaths:
+                            - /var/run
+                            - /var/lib/docker
     allowStageExecutions: true
