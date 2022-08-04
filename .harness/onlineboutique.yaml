@@ -71,12 +71,21 @@ pipeline:
                         execution:
                             steps:
                                 - step:
-                                      type: Run
+                                      type: RunTests
                                       name: Unit Tests
                                       identifier: Unit_Tests
                                       spec:
-                                          shell: Powershell
-                                          command: dotnet test src/cartservice/
+                                          language: Csharp
+                                          buildEnvironment: Core
+                                          frameworkVersion: "6.0"
+                                          buildTool: Dotnet
+                                          args: src/cartservice/
+                                          runOnlySelectedTests: true
+                                          reports:
+                                              type: JUnit
+                                              spec:
+                                                  paths:
+                                                      - "**/*.xml"
                     when:
                         pipelineStatus: Success
               - stage:
