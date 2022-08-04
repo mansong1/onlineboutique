@@ -129,6 +129,8 @@ pipeline:
                                               scan_type: repository
                                               product_name: owasp
                                               product_config_name: default
+                                              repository_project: <+pipeline.properties.ci.codebase.repoName>
+                                              repository_branch: <+pipeline.properties.ci.codebase.build.build.spec.branch>
     allowStageExecutions: true
     properties:
         ci:
