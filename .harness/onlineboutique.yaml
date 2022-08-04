@@ -35,7 +35,9 @@ pipeline:
                                     connectorRef: account.harnessImage
                                     image: golang:<+stage.variables.goVersion>
                                     shell: Sh
-                                    command: go test src/<+matrix.service>
+                                    command: |-
+                                        go env -w GO111MODULE=off
+                                        go test src/<+matrix.service>
               variables:
                   - name: goVersion
                     type: String
