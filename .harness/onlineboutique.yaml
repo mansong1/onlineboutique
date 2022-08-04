@@ -36,8 +36,8 @@ pipeline:
                                     image: golang:<+stage.variables.goVersion>
                                     shell: Sh
                                     command: |-
-                                        ls
-                                        go test src/<+matrix.service>
+                                        cd src/<+matrix.service>
+                                        go test
               variables:
                   - name: goVersion
                     type: String
