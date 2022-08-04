@@ -61,7 +61,7 @@ pipeline:
                                 type: Pool
                                 spec:
                                     poolName: windows
-                                    os: Linux
+                                    os: Windows
                         execution:
                             steps:
                                 - step:
