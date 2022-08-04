@@ -1,0 +1,48 @@
+pipeline:
+    name: onlineboutique
+    identifier: onlineboutique
+    projectIdentifier: Online_Boutique
+    orgIdentifier: default
+    tags: {}
+    properties:
+        ci:
+            codebase:
+                connectorRef: account.Github
+                repoName: onlineboutique
+                build: <+input>
+    stages:
+        - stage:
+              name: Go Unit Tests
+              identifier: Go_Unit_Tests
+              type: CI
+              spec:
+                  cloneCodebase: true
+                  infrastructure:
+                      type: KubernetesDirect
+                      spec:
+                          connectorRef: account.GKE
+                          namespace: harness-builds
+                          automountServiceAccountToken: true
+                          nodeSelector: {}
+                          os: Linux
+                  execution:
+                      steps:
+                          - step:
+                                type: Run
+                                name: Unit Tests
+                                identifier: Unit_Tests
+                                spec:
+                                    connectorRef: account.harnessImage
+                                    image: golang:<+stage.variables.goVersion>
+                                    shell: Sh
+                                    command: |-
+                                        for SERVICE in "shippingservice" "productcatalogservice"; do
+                                            echo "testing $SERVICE..."
+                                            pushd src/$SERVICE
+                                            go test
+                                            popd
+                                        done
+              variables:
+                  - name: goVersion
+                    type: String
+                    value: 1.17.5
