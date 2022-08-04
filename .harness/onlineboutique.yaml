@@ -59,7 +59,7 @@ pipeline:
                             type: KubernetesDirect
                             spec:
                                 connectorRef: account.EKS
-                                namespace: harness-delegate-ng
+                                namespace: harness-builds
                                 automountServiceAccountToken: true
                                 tolerations:
                                     - effect: NoSchedule
@@ -84,13 +84,17 @@ pipeline:
                                           frameworkVersion: "6.0"
                                           buildTool: Dotnet
                                           args: src/cartservice/
-                                          namespaces: harness-delegate-ng
+                                          namespaces: harness-builds
                                           runOnlySelectedTests: true
                                           reports:
                                               type: JUnit
                                               spec:
                                                   paths:
                                                       - "**/*.xml"
+                                          resources:
+                                              limits:
+                                                  memory: 1Gi
+                                                  cpu: "1.0"
                     when:
                         pipelineStatus: Success
               - stage:
