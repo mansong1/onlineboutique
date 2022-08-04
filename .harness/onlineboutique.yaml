@@ -4,12 +4,6 @@ pipeline:
     projectIdentifier: Online_Boutique
     orgIdentifier: default
     tags: {}
-    properties:
-        ci:
-            codebase:
-                connectorRef: account.Github
-                repoName: onlineboutique
-                build: <+input>
     stages:
         - parallel:
               - stage:
@@ -89,13 +83,29 @@ pipeline:
                     when:
                         pipelineStatus: Success
               - stage:
-                    name: Security Tests
-                    identifier: Security_Tests
+                    name: Security
+                    identifier: Security
                     type: SecurityTests
                     spec:
                         cloneCodebase: true
+                        sharedPaths:
+                            - /var/run
+                            - /var/lib/docker
                         infrastructure:
-                            useFromStage: Go_Unit_Tests
+                            type: KubernetesDirect
+                            spec:
+                                connectorRef: account.GKE
+                                namespace: harness-builds
+                                nodeSelector: {}
+                                os: Linux
+                        serviceDependencies:
+                            - identifier: DiND
+                              name: DiND
+                              type: Service
+                              spec:
+                                  connectorRef: account.harnessImage
+                                  image: docker:dind
+                                  privileged: true
                         execution:
                             steps:
                                 - step:
@@ -110,15 +120,10 @@ pipeline:
                                               scan_type: repository
                                               product_name: owasp
                                               product_config_name: default
-                        serviceDependencies:
-                            - identifier: DIND
-                              name: DIND
-                              type: Service
-                              spec:
-                                  connectorRef: account.harnessImage
-                                  image: docker:dind
-                                  privileged: true
-                        sharedPaths:
-                            - /var/run
-                            - /var/lib/docker
     allowStageExecutions: true
+    properties:
+        ci:
+            codebase:
+                connectorRef: account.Github
+                repoName: onlineboutique
+                build: <+input>
