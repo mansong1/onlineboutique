@@ -74,28 +74,19 @@ pipeline:
                         execution:
                             steps:
                                 - step:
-                                      type: RunTests
+                                      type: Run
                                       name: Unit Tests
                                       identifier: Unit_Tests
                                       spec:
                                           connectorRef: account.harnessImage
                                           image: mcr.microsoft.com/dotnet/sdk:6.0
-                                          language: Csharp
-                                          buildEnvironment: Core
-                                          frameworkVersion: "6.0"
-                                          buildTool: Dotnet
-                                          args: src/cartservice/
-                                          namespaces: harness-builds
-                                          runOnlySelectedTests: true
+                                          shell: Powershell
+                                          command: dotnet test src/cartservice/
                                           reports:
                                               type: JUnit
                                               spec:
                                                   paths:
                                                       - "**/*.xml"
-                                          resources:
-                                              limits:
-                                                  memory: 1Gi
-                                                  cpu: "1.0"
                     when:
                         pipelineStatus: Success
               - stage:
