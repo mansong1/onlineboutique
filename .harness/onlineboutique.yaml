@@ -117,6 +117,10 @@ pipeline:
                                   connectorRef: account.harnessImage
                                   image: docker:dind
                                   privileged: true
+                                  resources:
+                                      limits:
+                                          memory: 2.0Gi
+                                          cpu: "1.0"
                         execution:
                             steps:
                                 - step:
