@@ -128,7 +128,6 @@ pipeline:
                                       name: OWASP
                                       identifier: OWASP
                                       spec:
-                                          connectorRef: account.harnessImage
                                           privileged: true
                                           settings:
                                               policy_type: orchestratedScan
