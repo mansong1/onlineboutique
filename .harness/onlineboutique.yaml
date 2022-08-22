@@ -135,7 +135,7 @@ pipeline:
                           product_name: snyk
                           product_config_name: default
                           product_access_token: <+secrets.getValue("org.SNYK_TOKEN")>
-                          repository_project: onlineboutique
+                          repository_project: <+pipeline.properties.ci.codebase.repoName>
                           repository_branch: main
   allowStageExecutions: true
   properties:
