@@ -1,145 +1,146 @@
 pipeline:
-    name: onlineboutique
-    identifier: onlineboutique
-    projectIdentifier: Online_Boutique
-    orgIdentifier: default
-    tags: {}
-    stages:
-        - parallel:
-              - stage:
-                    name: Go Unit Tests
-                    identifier: Go_Unit_Tests
-                    type: CI
-                    spec:
-                        cloneCodebase: true
-                        infrastructure:
-                            type: KubernetesDirect
-                            spec:
-                                connectorRef: account.EKS
-                                namespace: harness-builds
-                                automountServiceAccountToken: true
-                                nodeSelector:
-                                    kubernetes.io/os: linux
-                                os: Linux
-                        execution:
-                            steps:
-                                - step:
-                                      type: Run
-                                      name: Unit Tests
-                                      identifier: Unit_Tests
-                                      spec:
-                                          connectorRef: account.harnessImage
-                                          image: golang:<+stage.variables.goVersion>
-                                          shell: Sh
-                                          command: |-
-                                              go install gotest.tools/gotestsum@latest
-                                              cd src/<+matrix.service>
-                                              gotestsum --junitfile unit-tests-<+matrix.service>.xml
-                                          reports:
-                                              type: JUnit
-                                              spec:
-                                                  paths:
-                                                      - "**/unit-tests-<+matrix.service>.xml"
-                                      failureStrategies: []
-                                      strategy:
-                                          matrix:
-                                              service:
-                                                  - shippingservice
-                                                  - productcatalogservice
-                    variables:
-                        - name: goVersion
-                          type: String
-                          value: 1.17.5
-              - stage:
-                    name: CSharp Unit Tests
-                    identifier: CSharp_Unit_Tests
-                    type: CI
-                    spec:
-                        cloneCodebase: true
-                        infrastructure:
-                            type: KubernetesDirect
-                            spec:
-                                connectorRef: account.EKS
-                                namespace: harness-builds
-                                automountServiceAccountToken: true
-                                tolerations:
-                                    - effect: NoSchedule
-                                      key: os
-                                      operator: Equal
-                                      value: windows
-                                nodeSelector:
-                                    kubernetes.io/os: windows
-                                    kubernetes.io/arch: amd64
-                                os: Windows
-                        execution:
-                            steps:
-                                - step:
-                                      type: Run
-                                      name: Unit Tests
-                                      identifier: Unit_Tests
-                                      spec:
-                                          connectorRef: account.harnessImage
-                                          image: mcr.microsoft.com/dotnet/runtime:6.0
-                                          shell: Powershell
-                                          command: dotnet test src/cartservice/
-                                          reports:
-                                              type: JUnit
-                                              spec:
-                                                  paths:
-                                                      - "**/*.xml"
-                                          resources:
-                                              limits:
-                                                  memory: 1Gi
-                                                  cpu: "1.0"
-                    when:
-                        pipelineStatus: Success
-              - stage:
-                    name: Security
-                    identifier: Security
-                    type: SecurityTests
-                    spec:
-                        cloneCodebase: true
-                        sharedPaths:
-                            - /var/run
-                            - /var/lib/docker
-                        infrastructure:
-                            type: KubernetesDirect
-                            spec:
-                                connectorRef: account.GKE
-                                namespace: harness-builds
-                                nodeSelector: {}
-                                os: Linux
-                        serviceDependencies:
-                            - identifier: DiND
-                              name: DiND
-                              type: Service
-                              spec:
-                                  connectorRef: account.harnessImage
-                                  image: docker:dind
-                                  privileged: true
-                                  resources:
-                                      limits:
-                                          memory: 2.0Gi
-                                          cpu: "1.0"
-                        execution:
-                            steps:
-                                - step:
-                                      type: Security
-                                      name: OWASP
-                                      identifier: OWASP
-                                      spec:
-                                          privileged: true
-                                          settings:
-                                              policy_type: orchestratedScan
-                                              scan_type: repository
-                                              product_name: owasp
-                                              product_config_name: default
-                                              repository_project: <+pipeline.properties.ci.codebase.repoName>
-                                              repository_branch: main
-    allowStageExecutions: true
-    properties:
-        ci:
-            codebase:
-                connectorRef: TempGithub
-                repoName: onlineboutique
-                build: <+input>
+  name: onlineboutique
+  identifier: onlineboutique
+  projectIdentifier: Online_Boutique
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - parallel:
+        - stage:
+            name: Go Unit Tests
+            identifier: Go_Unit_Tests
+            type: CI
+            spec:
+              cloneCodebase: true
+              infrastructure:
+                type: KubernetesDirect
+                spec:
+                  connectorRef: account.EKS
+                  namespace: harness-builds
+                  automountServiceAccountToken: true
+                  nodeSelector:
+                    kubernetes.io/os: linux
+                  os: Linux
+              execution:
+                steps:
+                  - step:
+                      type: Run
+                      name: Unit Tests
+                      identifier: Unit_Tests
+                      spec:
+                        connectorRef: account.harnessImage
+                        image: golang:<+stage.variables.goVersion>
+                        shell: Sh
+                        command: |-
+                          go install gotest.tools/gotestsum@latest
+                          cd src/<+matrix.service>
+                          gotestsum --junitfile unit-tests-<+matrix.service>.xml
+                        reports:
+                          type: JUnit
+                          spec:
+                            paths:
+                              - "**/unit-tests-<+matrix.service>.xml"
+                      failureStrategies: []
+                      strategy:
+                        matrix:
+                          service:
+                            - shippingservice
+                            - productcatalogservice
+            variables:
+              - name: goVersion
+                type: String
+                value: 1.17.5
+        - stage:
+            name: CSharp Unit Tests
+            identifier: CSharp_Unit_Tests
+            type: CI
+            spec:
+              cloneCodebase: true
+              infrastructure:
+                type: KubernetesDirect
+                spec:
+                  connectorRef: account.EKS
+                  namespace: harness-builds
+                  automountServiceAccountToken: true
+                  tolerations:
+                    - effect: NoSchedule
+                      key: os
+                      operator: Equal
+                      value: windows
+                  nodeSelector:
+                    kubernetes.io/os: windows
+                    kubernetes.io/arch: amd64
+                  os: Windows
+              execution:
+                steps:
+                  - step:
+                      type: Run
+                      name: Unit Tests
+                      identifier: Unit_Tests
+                      spec:
+                        connectorRef: account.harnessImage
+                        image: mcr.microsoft.com/dotnet/runtime:6.0
+                        shell: Powershell
+                        command: dotnet test src/cartservice/
+                        reports:
+                          type: JUnit
+                          spec:
+                            paths:
+                              - "**/*.xml"
+                        resources:
+                          limits:
+                            memory: 1Gi
+                            cpu: "1.0"
+            when:
+              pipelineStatus: Success
+        - stage:
+            name: Security
+            identifier: Security
+            type: SecurityTests
+            spec:
+              cloneCodebase: true
+              sharedPaths:
+                - /var/run
+                - /var/lib/docker
+              infrastructure:
+                type: KubernetesDirect
+                spec:
+                  connectorRef: account.GKE
+                  namespace: harness-builds
+                  nodeSelector: {}
+                  os: Linux
+              serviceDependencies:
+                - identifier: DiND
+                  name: DiND
+                  type: Service
+                  spec:
+                    connectorRef: account.harnessImage
+                    image: docker:dind
+                    privileged: true
+                    resources:
+                      limits:
+                        memory: 2.0Gi
+                        cpu: "1.0"
+              execution:
+                steps:
+                  - step:
+                      type: Security
+                      name: Snyk Test
+                      identifier: Snyk_Test
+                      spec:
+                        privileged: true
+                        settings:
+                          policy_type: orchestratedScan
+                          scan_type: repository
+                          product_name: snyk
+                          product_config_name: default
+                          product_access_token: <+secrets.getValue("org.SNYK_TOKEN")>
+                          repository_project: onlineboutique
+                          repository_branch: main
+  allowStageExecutions: true
+  properties:
+    ci:
+      codebase:
+        connectorRef: TempGithub
+        repoName: onlineboutique
+        build: <+input>
