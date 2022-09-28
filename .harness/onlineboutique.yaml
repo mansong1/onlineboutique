@@ -126,7 +126,7 @@ pipeline:
                   - step:
                       type: Security
                       name: OWASP
-                      identifier: Snyk_Test
+                      identifier: owasp
                       spec:
                         privileged: true
                         settings:
