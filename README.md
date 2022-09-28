@@ -5,7 +5,7 @@
 
 ![Continuous Integration](https://github.com/GoogleCloudPlatform/microservices-demo/workflows/Continuous%20Integration%20-%20Main/Release/badge.svg)
 
-**Online Boutique** is a cloud-native microservices demo application.
+**Online Boutique** is a cloud-first microservices demo application.
 Online Boutique consists of an 11-tier microservices application. The application is a
 web-based e-commerce app where users can browse items,
 add them to the cart, and purchase them.
@@ -122,6 +122,10 @@ EXTERNAL-IP
 gcloud container clusters delete onlineboutique \
     --project=${PROJECT_ID} --zone=${ZONE}
 ```
+
+## Automated Deployment
+
+Automated deployment for the Online Boutique sample application is supported in this repository. Instructions for using Terraform to replicate the [**Quickstart (GKE)**](https://github.com/GoogleCloudPlatform/microservices-demo/tree/main/README.md#quickstart-gke) steps can be found inside [/terraform/README.md](https://github.com/GoogleCloudPlatform/microservices-demo/tree/main/terraform).
 
 ## Other Deployment Options
 
